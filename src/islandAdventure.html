@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<title>Island Adventure</title>
+
+<style>
+  #stage
+  {
+    position: relative;
+    width: 384px;
+    height: 384px;
+    background-image: url(../images/background.png);
+  }
+
+  .cell
+  {
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+  }
+
+  p
+  {
+    width: 400px;
+  }
+
+</style>
+
+<div id="stage"></div>
+<p id="output"></p>
+
+<script>
+
+//Get a reference for  the stage and output
+let stage = document.querySelector("#stage");
+let output = document.querySelector("#output");
+
+//The 2D array that defines the game map
+let map =
+[
+  [0,2,0,0,0,3],
+  [0,0,0,1,0,0],
+  [0,1,0,0,0,0],
+  [0,0,0,0,2,0],
+  [0,2,0,1,0,0],
+  [0,0,0,0,0,0]
+];
+
+//Map code
+const WATER = 0;
+const ISLAND = 1;
+const PIRATE = 2;
+const HOME = 3
+
+//The size of each cell
+const SIZE = 64;
+
+//Get the number of row and columns
+const ROWS = map.length;
+const COLUMNS = map[0].length;
+
+render();
+
+function render()
+{
+  //clear the stage of img tag cells from the previous turn
+  if(stage.hasChildNodes())
+  {
+    for(let i = 0; i < ROWS * COLUMNS; i++)
+    {
+      stage.removerChild(stage.firstChild);
+    }
+  }
+
+  //Render the game by looping through the map arrays
+  for(let row = 0; row < ROWS; row++)
+  {
+    for(let column = 0; column < COLUMNS; column++)
+    {
+      //Create an img tag called cells
+      let cell = document.createElement("img");
+
+      //Set its CSS class to "cell"
+      cell.setAttribute("class","cell");
+
+      //Add the img tag to the stage
+      stage.appendChild(cell);
+
+      //Find the correct image for this map cell
+      switch(map[row][column])
+      {
+        case WATER:
+          cell.src = "../images/water.png";
+          break;
+
+        case ISLAND:
+          cell.src = "../images/island.png";
+          break;
+
+        case PIRATE:
+          cell.src = "../images/pirate.png";
+          break;
+
+        case HOME:
+          cell.src = "../images/home.png";
+          break;
+      }
+
+      //Position the cell
+      cell.style.top = row * SIZE + "px";
+      cell.style.left = column * SIZE + "px";
+    }
+  }
+}
+
+</script>
