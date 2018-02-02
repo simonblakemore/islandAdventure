@@ -87,6 +87,12 @@ for(let row = 0; row < ROWS; row++)
   }
 }
 
+//Game variables
+let food = 10;
+let gold = 10;
+let experience = 0;
+let gameMessage = "Use the arrow keys to find your way home.";
+
 //Assign key codes to constants
 const UP = 38;
 const DOWN = 40;
@@ -119,14 +125,13 @@ function keydownHandler(event)
 
     case DOWN:
       //Move the ship down one row in the gameObjects array
-      //Move the ship up one row in the gameObjects array
       //Find out if the ship's move will be within the playing field
       if(shipRow < ROWS - 1)
       {
         //If it is, clear the ship's current cell
         gameObjects[shipRow][shipColumn] = 0;
 
-        //Subtract 1 from the ship's row to move it up one row on the map
+        //add 1 to the ship's row to move it down one row on the map
         shipRow++;
 
         //Apply the ship's new position to the array
@@ -135,15 +140,14 @@ function keydownHandler(event)
       break;
 
     case LEFT:
-      //Move the ship left one row in the gameObjects array
-      //Move the ship up one row in the gameObjects array
+      //Move the ship left one column in the gameObjects array
       //Find out if the ship's move will be within the playing field
       if(shipColumn > 0)
       {
         //If it is, clear the ship's current cell
         gameObjects[shipRow][shipColumn] = 0;
 
-        //Subtract 1 from the ship's row to move it up one row on the map
+        //Subtract 1 from the ship's column to move it up one row on the map
         shipColumn--;
 
         //Apply the ship's new position to the array
@@ -152,15 +156,14 @@ function keydownHandler(event)
       break;
 
     case RIGHT:
-      //Move the ship right one row in the gameObjects array
-      //Move the ship up one row in the gameObjects array
+      //Move the ship right one column in the gameObjects array
       //Find out if the ship's move will be within the playing field
       if(shipColumn < COLUMNS - 1)
       {
         //If it is, clear the ship's current cell
         gameObjects[shipRow][shipColumn] = 0;
 
-        //Subtract 1 from the ship's row to move it up one row on the map
+        //Add 1 to the ship's column to move it up one row on the map
         shipColumn++;
 
         //Apply the ship's new position to the array
@@ -169,8 +172,126 @@ function keydownHandler(event)
       break;
   }
 
+  switch(map[shipRow][shipColumn])
+  {
+    case WATER:
+      gameMessage = "You sail the open seas.";
+      break;
+
+    case PIRATE:
+      fight();
+      break;
+
+    case ISLAND:
+      trade();
+      break;
+
+    case HOME:
+      endGame();
+      break;
+  }
+
+  //Subtract some food each turn
+  food--;
+
+  //Find out if the ship has run out of food or gold
+  if(food <= 0 || gold <= 0)
+  {
+    endGame();
+  }
+
   //Render the game
   render();
+}
+
+function trade()
+{
+  //Figure out how much food the idland has and how much it should const
+  let islandsFood = experience + gold;
+  let cost = Math.ceil(Math.random() * islandsFood);
+
+  //Let the player buy food if there's enough gold to afford it
+  if(gold > cost)
+  {
+    food += islandsFood;
+    gold -= cost;
+    experience += 2;
+
+    gameMessage = "You buy " + islandsFood + " cocnuts" + " for " + cost + " gold pieces."
+  }
+  else
+  {
+    //Tell the player if they dont have enough gold
+    experience += 1;
+    gameMessage = "You don't have enough gold to buy food."
+  }
+}
+
+function fight()
+{
+  //The ships strength
+  let shipStrength = Math.ceil((food + gold) / 2);
+
+  //A random number between 1 and the ships shipStrength
+  let pirateStrength = Math.ceil(Math.random() * shipStrength * 2);
+
+  //Find out if the pirates are stronger than the player's shipStrength
+  if(pirateStrength > shipStrength)
+  {
+    //The pirates ransack the shipStrength
+    let stolenGold = Math.round(pirateStrength / 2);
+    gold -= stolenGold;
+
+    //Give the player some experience for trying
+    experience +=1;
+
+    //Update the game message
+    gameMessage = "You fight and LOSE " + stolenGold + " gold pieces."
+      + "<br>Ship's strength: " + shipStrength
+      + "<br>Pirate's strength: " + pirateStrength + "<br>";
+  }
+  else
+  {
+    //The player wis the pirates gold
+    let pirateGold = Math.round(pirateStrength / 2);
+    gold += pirateGold;
+
+    //Add some experience
+    experience += 2;
+
+    //Update the game message
+    gameMessage = "You fight and WIN " + pirateGold + " gold pieces."
+      + "<br>Ship's strength: " + shipStrength
+      + "<br>Pirate's strength: " + pirateStrength + "<br>";
+  }
+}
+
+function endGame()
+{
+  if(map[shipRow][shipColumn] === HOME)
+  {
+    //Calculate the score
+    let score = food + gold + experience;
+
+    //Display the game message
+    gameMessage = "You made it home ALIVE! " + "Final Score: " + score;
+  }
+  else
+  {
+    //Display the game message if the player has run out of gold or food
+    if(gold <= 0)
+    {
+      gameMessage += " You've run out of gold!";
+    }
+    else
+    {
+      gameMessage += " You've run out of food!";
+    }
+    gameMessage += " Your crew throws you overboard!";
+  }
+
+  //Remove the keyboard listener to end the gameMessage
+  window.removeEventListener("keydown", keydownHandler, false);
 }
 
 function render()
@@ -231,6 +352,12 @@ function render()
       cell.style.left = column * SIZE + "px";
     }
   }
+
+  //Display the game message
+  output.innerHTML = gameMessage;
+
+  //Display the player's food gold and experience
+  output.innerHTML += "<br>Gold: " + gold + ", Food: " + food + ", Experience: " + experience;
 }
 
 </script>
