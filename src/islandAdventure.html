@@ -87,7 +87,91 @@ for(let row = 0; row < ROWS; row++)
   }
 }
 
+//Assign key codes to constants
+const UP = 38;
+const DOWN = 40;
+const RIGHT = 39;
+const LEFT = 37;
+
+window.addEventListener("keydown", keydownHandler, false);
+
 render();
+
+function keydownHandler(event)
+{
+  switch(event.keyCode)
+  {
+    case UP:
+      //Move the ship up one row in the gameObjects array
+      //Find out if the ship's move will be within the playing field
+      if(shipRow > 0)
+      {
+        //If it is, clear the ship's current cell
+        gameObjects[shipRow][shipColumn] = 0;
+
+        //Subtract 1 from the ship's row to move it up one row on the map
+        shipRow--;
+
+        //Apply the ship's new position to the array
+        gameObjects[shipRow][shipColumn] = SHIP;
+      }
+      break;
+
+    case DOWN:
+      //Move the ship down one row in the gameObjects array
+      //Move the ship up one row in the gameObjects array
+      //Find out if the ship's move will be within the playing field
+      if(shipRow < ROWS - 1)
+      {
+        //If it is, clear the ship's current cell
+        gameObjects[shipRow][shipColumn] = 0;
+
+        //Subtract 1 from the ship's row to move it up one row on the map
+        shipRow++;
+
+        //Apply the ship's new position to the array
+        gameObjects[shipRow][shipColumn] = SHIP;
+      }
+      break;
+
+    case LEFT:
+      //Move the ship left one row in the gameObjects array
+      //Move the ship up one row in the gameObjects array
+      //Find out if the ship's move will be within the playing field
+      if(shipColumn > 0)
+      {
+        //If it is, clear the ship's current cell
+        gameObjects[shipRow][shipColumn] = 0;
+
+        //Subtract 1 from the ship's row to move it up one row on the map
+        shipColumn--;
+
+        //Apply the ship's new position to the array
+        gameObjects[shipRow][shipColumn] = SHIP;
+      }
+      break;
+
+    case RIGHT:
+      //Move the ship right one row in the gameObjects array
+      //Move the ship up one row in the gameObjects array
+      //Find out if the ship's move will be within the playing field
+      if(shipColumn < COLUMNS - 1)
+      {
+        //If it is, clear the ship's current cell
+        gameObjects[shipRow][shipColumn] = 0;
+
+        //Subtract 1 from the ship's row to move it up one row on the map
+        shipColumn++;
+
+        //Apply the ship's new position to the array
+        gameObjects[shipRow][shipColumn] = SHIP;
+      }
+      break;
+  }
+
+  //Render the game
+  render();
+}
 
 function render()
 {
@@ -96,7 +180,7 @@ function render()
   {
     for(let i = 0; i < ROWS * COLUMNS; i++)
     {
-      stage.removerChild(stage.firstChild);
+      stage.removeChild(stage.firstChild);
     }
   }
 
