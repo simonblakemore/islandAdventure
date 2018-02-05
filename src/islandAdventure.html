@@ -50,7 +50,7 @@ let map =
 let gameObjects =
 [
   [0,0,0,0,0,0],
-  [0,0,0,0,0,0],
+  [0,0,5,0,0,0],
   [0,0,0,0,0,0],
   [0,0,0,0,0,0],
   [0,0,0,0,0,0],
@@ -63,6 +63,7 @@ const ISLAND = 1;
 const PIRATE = 2;
 const HOME = 3;
 const SHIP = 4;
+const MONSTER = 5;
 
 //The size of each cell
 const SIZE = 64;
@@ -71,9 +72,11 @@ const SIZE = 64;
 const ROWS = map.length;
 const COLUMNS = map[0].length;
 
-//Get ship location
+//Get ship and monster location
 let shipRow;
 let shipColumn;
+let monsterRow;
+let monsterColumn;
 
 //Loop through gameObhects array to get the ship location
 for(let row = 0; row < ROWS; row++)
@@ -84,6 +87,11 @@ for(let row = 0; row < ROWS; row++)
     {
       shipRow = row;
       shipColumn = column;
+    }
+    if (gameObjects[row][column] === MONSTER)
+    {
+      monsterRow = row;
+      monsterColumn = column;
     }
   }
 }
@@ -340,11 +348,15 @@ function render()
           break;
       }
 
-      //Add the ship from the gameObjets arrays
+      //Add the ship and monster from the gameObjets arrays
       switch(gameObjects[row][column])
       {
         case SHIP:
           cell.src = "../images/ship.png";
+          break;
+
+        case MONSTER:
+          cell.src = "../images/monster.png";
           break;
       }
 
