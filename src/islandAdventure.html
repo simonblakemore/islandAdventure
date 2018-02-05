@@ -181,6 +181,8 @@ function keydownHandler(event)
       break;
   }
 
+  moveMonster();
+
   switch(map[shipRow][shipColumn])
   {
     case WATER:
@@ -272,6 +274,99 @@ function fight()
     gameMessage = "You fight and WIN " + pirateGold + " gold pieces."
       + "<br>Ship's strength: " + shipStrength
       + "<br>Pirate's strength: " + pirateStrength + "<br>";
+  }
+}
+
+function moveMonster()
+{
+  //The four possible directions that the monster can moveMonster
+  const UP = 1;
+  const DOWN = 2;
+  const LEFT = 3;
+  const RIGHT = 4;
+
+  //An array to store the valid directions that the monster can move in
+  let validDirections = [];
+
+  //The final direction that the monster will move in
+  let direction = undefined;
+
+  //Find out what kind of things are in the cells that surround the monster
+  //If the cell contains WATER, push the corresponding direction into the validDirectory array
+  if(monsterRow > 0)
+  {
+    let thingAbove = map[monsterRow - 1][monsterColumn];
+    if(thingAbove === WATER)
+    {
+      validDirections.push(UP);
+    }
+  }
+  if(monsterRow < ROWS - 1)
+  {
+    let thingBelow = map[monsterRow + 1][monsterColumn];
+    if(thingBelow === WATER)
+    {
+      validDirections.push(DOWN);
+    }
+  }
+  if(monsterColumn > 0)
+  {
+    let thingToTheLeft = map[monsterRow][monsterColumn - 1];
+    if (thingToTheLeft === WATER)
+    {
+      validDirections.push(LEFT);
+    }
+  }
+  if(monsterColumn < COLUMNS - 1)
+  {
+    let thingToTheRight = map[monsterRow][monsterColumn + 1];
+    if(thingToTheRight === WATER)
+    {
+      validDirections.push(RIGHT);
+    }
+  }
+
+  //The validDirections array now contains 0 to 4 directions that
+  //contain WATER cells. WHich of those directions will the monsterRow
+  //choose to move in?
+
+  //If a valid direction was found, randomly choose one of the
+  //possible directions and assign it to the direction variables
+  if(validDirections.length !== 0)
+  {
+    let randomNumber = Math.floor(Math.random() * validDirections.length);
+    direction = validDirections[randomNumber];
+  }
+
+  //Move the monster in the chosen random direction
+  switch(direction)
+  {
+    case UP:
+      //Clear the monster's current cell
+      gameObjects[monsterRow][monsterColumn] = 0;
+      //Subtract 1 from the monster's row
+      monsterRow--;
+      //Apply the monster's new updated position to the array
+      gameObjects[monsterRow][monsterColumn] = MONSTER;
+      break;
+
+    case DOWN:
+      gameObjects[monsterRow][monsterColumn] = 0;
+      monsterRow++;
+      gameObjects[monsterRow][monsterColumn] = MONSTER;
+      break;
+
+    case LEFT:
+      gameObjects[monsterRow][monsterColumn] = 0;
+      monsterColumn--;
+      gameObjects[monsterRow][monsterColumn] = MONSTER;
+      break;
+
+    case RIGHT:
+      gameObjects[monsterRow][monsterColumn] = 0;
+      monsterColumn++;
+      gameObjects[monsterRow][monsterColumn] = MONSTER;
+      break;
   }
 }
 
