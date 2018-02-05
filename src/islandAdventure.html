@@ -181,8 +181,6 @@ function keydownHandler(event)
       break;
   }
 
-  moveMonster();
-
   switch(map[shipRow][shipColumn])
   {
     case WATER:
@@ -200,6 +198,15 @@ function keydownHandler(event)
     case HOME:
       endGame();
       break;
+  }
+
+  //Move the monster
+  moveMonster();
+
+  //Find out if the ship is touching the monster
+  if(gameObjects[shipRow][shipColumn] === MONSTER)
+  {
+    endGame();
   }
 
   //Subtract some food each turn
@@ -379,6 +386,10 @@ function endGame()
 
     //Display the game message
     gameMessage = "You made it home ALIVE! " + "Final Score: " + score;
+  }
+  else if (gameObjects[shipRow][shipColumn] === MONSTER)
+  {
+    gameMessage = "Your ship has been swallowed by a sea monster!";
   }
   else
   {
